@@ -4,6 +4,11 @@
 
 import HeaderAsideFooterLayout from './layouts/HeaderAsideFooterLayout';
 import Home from './pages/Home';
+
+import HeaderAsideFooterResponsiveLayout from './layouts/HeaderAsideFooterResponsiveLayout';
+import ProductPage from './pages/ProductPage';
+
+import PageEdit from './pages/PageEdit';
 import NotFound from './pages/NotFound';
 
 const routerConfig = [
@@ -11,6 +16,16 @@ const routerConfig = [
     path: '/',
     layout: HeaderAsideFooterLayout,
     component: Home,
+  },
+  {
+    path: '/productPage',
+    layout: HeaderAsideFooterResponsiveLayout,
+    component: ProductPage,
+  },
+  {
+    path: '/pageEdit',
+    layout: HeaderAsideFooterResponsiveLayout,
+    component: PageEdit,
   },
   {
     path: '*',
