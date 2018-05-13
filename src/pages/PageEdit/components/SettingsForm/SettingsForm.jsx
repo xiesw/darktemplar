@@ -1,7 +1,7 @@
 /* eslint  react/no-string-refs: 0 */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import IceContainer from '@icedesign/container';
-import { Input, Button, Radio, Switch, Upload, Grid } from '@icedesign/base';
+import {Input, Button, Radio, Switch, Upload, Grid} from '@icedesign/base';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
@@ -9,9 +9,9 @@ import {
 } from '@icedesign/form-binder';
 import './SettingsForm.scss';
 
-const { Row, Col } = Grid;
-const { Group: RadioGroup } = Radio;
-const { ImageUpload } = Upload;
+const {Row, Col} = Grid;
+const {Group: RadioGroup} = Radio;
+const {ImageUpload} = Upload;
 
 function beforeUpload(info) {
   console.log('beforeUpload callback : ', info);
@@ -41,16 +41,29 @@ export default class SettingsForm extends Component {
     this.state = {
       value: {
         name: '',
-        gender: 'male',
-        notice: false,
-        email: '',
-        avatar: '',
-        siteUrl: '',
-        githubUrl: '',
-        twitterUrl: '',
-        description: '',
+        recommendDesc: '',
+        applyUrl: '',
+        joincount: '',
+        code: '',
+        imagepath:''
       },
     };
+    this.data = props.data;
+  }
+
+  componentDidMount() {
+    if (this.data) {
+      this.setState({
+        value: {
+          name: this.data.name,
+          recommendDesc: this.data.recommendDesc,
+          applyUrl: this.data.applyUrl,
+          joincount: this.data.joincount,
+          code: this.data.code,
+          imagepath: this.data.imagepath,
+        },
+      })
+    }
   }
 
   onDragOver = () => {
@@ -68,9 +81,12 @@ export default class SettingsForm extends Component {
     });
   };
 
-  validateAllFormField = () => {
+  validateAllFormField() {
     this.refs.form.validateAll((errors, values) => {
       console.log('errors', errors, 'values', values);
+      if (!errors) {
+        this.props.onEditSuccess(this.props.type,this.props.data, this.state.value);
+      }
     });
   };
 
@@ -89,38 +105,38 @@ export default class SettingsForm extends Component {
                   名称：
                 </Col>
                 <Col s="12" l="10">
-                  <IceFormBinder name="name" required max={10} message="必填">
-                    <Input size="large" placeholder="解忧帮" />
+                  <IceFormBinder name="name" required max={10} message="请输入名称">
+                    <Input size="large" placeholder="解忧帮"/>
                   </IceFormBinder>
-                  <IceFormError name="name" />
+                  <IceFormError name="name"/>
                 </Col>
               </Row>
 
-              <Row style={styles.formItem}>
-                <Col xxs="6" s="5" l="3" style={styles.label}>
-                  Logo：
-                </Col>
-                <Col s="12" l="10">
-                  <IceFormBinder name="avatar" required message="必填">
-                    <ImageUpload
-                      listType="picture-card"
-                      action=""
-                      accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-                      locale={{
-                        image: {
-                          cancel: '取消上传',
-                          addPhoto: '上传图片',
-                        },
-                      }}
-                      beforeUpload={beforeUpload}
-                      onChange={onChange}
-                      onSuccess={onSuccess}
-                      onError={onError}
-                    />
-                  </IceFormBinder>
-                  <IceFormError name="avatar" />
-                </Col>
-              </Row>
+              {/*<Row style={styles.formItem}>*/}
+              {/*<Col xxs="6" s="5" l="3" style={styles.label}>*/}
+              {/*Logo：*/}
+              {/*</Col>*/}
+              {/*<Col s="12" l="10">*/}
+              {/*<IceFormBinder name="avatar" required message="必填">*/}
+              {/*<ImageUpload*/}
+              {/*listType="picture-card"*/}
+              {/*action=""*/}
+              {/*accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"*/}
+              {/*locale={{*/}
+              {/*image: {*/}
+              {/*cancel: '取消上传',*/}
+              {/*addPhoto: '上传图片',*/}
+              {/*},*/}
+              {/*}}*/}
+              {/*beforeUpload={beforeUpload}*/}
+              {/*onChange={onChange}*/}
+              {/*onSuccess={onSuccess}*/}
+              {/*onError={onError}*/}
+              {/*/>*/}
+              {/*</IceFormBinder>*/}
+              {/*<IceFormError name="avatar" />*/}
+              {/*</Col>*/}
+              {/*</Row>*/}
 
               <Row style={styles.formItem}>
                 <Col xxs="6" s="5" l="3" style={styles.label}>
@@ -137,7 +153,7 @@ export default class SettingsForm extends Component {
                       placeholder="零门槛，极速借"
                     />
                   </IceFormBinder>
-                  <IceFormError name="recommendDesc" />
+                  <IceFormError name="recommendDesc"/>
                 </Col>
               </Row>
 
@@ -147,19 +163,17 @@ export default class SettingsForm extends Component {
                 </Col>
                 <Col s="12" l="10">
                   <IceFormBinder
-                    type="url"
-                    name="siteUrl"
+                    name="applyUrl"
                     required
                     message="请输入正确的网站地址"
                   >
                     <Input
                       size="large"
-                      type="url"
                       placeholder="https://alibaba.github.io/ice"
                     />
                   </IceFormBinder>
                   <IceFormError
-                    name="siteUrl"
+                    name="applyUrl"
                     required
                     message="请输入正确的网站地址"
                   />
@@ -181,7 +195,7 @@ export default class SettingsForm extends Component {
                       placeholder="123456"
                     />
                   </IceFormBinder>
-                  <IceFormError name="joincount" />
+                  <IceFormError name="joincount"/>
                 </Col>
               </Row>
 
@@ -195,21 +209,21 @@ export default class SettingsForm extends Component {
                     required
                     message="请输入正确的 统计code"
                   >
-                    <Input size="large" placeholder="jieyoubang" />
+                    <Input size="large" placeholder="jieyoubang"/>
                   </IceFormBinder>
-                  <IceFormError name="code" />
+                  <IceFormError name="code"/>
                 </Col>
               </Row>
             </div>
           </IceFormBinderWrapper>
 
-          <Row style={{ marginTop: 20 }}>
+          <Row style={{marginTop: 20}}>
             <Col offset="3">
               <Button
                 size="large"
                 type="primary"
-                style={{ width: 100 }}
-                onClick={this.validateAllFormField}
+                style={{width: 100}}
+                onClick={() => this.validateAllFormField()}
               >
                 提 交
               </Button>
@@ -224,7 +238,7 @@ export default class SettingsForm extends Component {
 const styles = {
   label: {
     textAlign: 'right',
-    width:30
+    width: 30
   },
   formContent: {
     width: '100%',

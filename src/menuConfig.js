@@ -9,11 +9,11 @@ const headerMenuConfig = [
     icon: 'home',
   },
   {
-    name: '反馈',
-    path: 'https://github.com/alibaba/ice',
+    name: '网站',
+    path: 'http://39.107.125.244/dist/',
     external: true,
     newWindow: true,
-    icon: 'message',
+    icon: 'link',
   },
   {
     name: '帮助',
@@ -33,7 +33,7 @@ const asideMenuConfig = [
   {
     name: '列表管理',
     path: '/productPage',
-    icon: 'home',
+    icon: 'publish',
   },
 ];
 

@@ -8,7 +8,11 @@ export default class Api {
   static getLoanList() {
     let url = 'https://www.easy-mock.com/mock/5ab5bb961a094046dab2caba/example/loanlist';
     return Http.get(url);
+  }
 
+  static uploadLoanList(data) {
+    let url = 'https://www.easy-mock.com/mock/5ab5bb961a094046dab2caba/example/loanlist';
+    return Http.post(url,data);
   }
 
 }
