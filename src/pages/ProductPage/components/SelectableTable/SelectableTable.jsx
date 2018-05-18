@@ -1,5 +1,15 @@
 import React, {Component} from 'react';
-import {Table, Button, Icon, Pagination, Dialog, Notice, Feedback, Form, Upload} from '@icedesign/base';
+import {
+  Table,
+  Button,
+  Icon,
+  Pagination,
+  Dialog,
+  Notice,
+  Feedback,
+  Form,
+  Upload
+} from '@icedesign/base';
 import IceContainer from '@icedesign/container';
 import Api from "../../../../net/Api";
 import Http from "../../../../net/Http";
@@ -143,32 +153,45 @@ export default class SelectableTable extends Component {
     console.log("onChange callback : ", file);
   }
 
-  imageRender = function (imagepath, index, record) {
+  onSuccess(res, dataUrl) {
+    console.log("onSuccess callback : ", res);
+  }
+
+  onError(file, index, record) {
+    console.log("onError callback : ", file);
+    console.log('pain.xie:', index);
+    console.log('pain.xie:', record);
+    record.imagepath = file.name;
+    this.forceUpdate();
+    this.checkSave();
+  }
+
+  imageRender(imagepath, index, record) {
     // todo
-      //if(imagepath) {
-      if(false) {
-        return (
-          <img
-            style={styles.image}
-            src={Http.getImagePath(imagepath)}
-            onClick={() => {
-              console.log('pain.xie', index)
-            }}
-          />)
-      } else {
-        return(<Upload
-          listType="text"
-          action="http://39.107.125.244:8080/loan/api/channel/img"
-          accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-          data={{ token: "abcd" }}
-          name={"channelImg"}
-          onChange={this.onChange}
-        >
-          <Button type="primary" style={{ margin: "0 0 10px" }}>
-            上传图片
-          </Button>
-        </Upload>)
-      }
+    console.log('pain.xie:', "123333");
+    return (
+      <Upload
+        listType="text"
+        action="http://39.107.125.244:8080/loan/api/channel/img"
+        accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
+        data={{token: "abcd"}}
+        name={"channelImg"}
+        limit={1}
+        showUploadList={false}
+        onChange={(file) => this.onChange(file)}
+        onError={(file) => this.onError(file, index, record)}
+      >
+        {
+          imagepath ?
+            <img
+              style={styles.image}
+              src={Http.getImagePath(imagepath)}
+            />
+            : <Button type="primary" style={{margin: "0 0 10px"}}>
+              上传图片
+            </Button>
+        }
+      </Upload>)
   };
 
   renderOperator = (value, index, record) => {
@@ -221,7 +244,10 @@ export default class SelectableTable extends Component {
             dataSource={this.state.dataSource}
             isLoading={this.state.isLoading}
           >
-            <Table.Column title="图片" cell={this.imageRender} dataIndex="imagepath" width={75}/>
+            <Table.Column title="图片"
+                          cell={(imagepath, index, record) => this.imageRender(imagepath, index, record)}
+                          dataIndex="imagepath"
+                          width={75}/>
             <Table.Column title="名称" dataIndex="name" width={80}/>
             <Table.Column title="描述" dataIndex="recommendDesc" width={120}/>
             <Table.Column title="链接" dataIndex="applyUrl" width={160}/>
@@ -247,7 +273,7 @@ export default class SelectableTable extends Component {
           <SettingsForm
             type={this.state.dialogType}
             data={this.state.editData}
-            onEditSuccess={(type, oldData, newData) => this.onEditSuccess(type,  oldData, newData)}
+            onEditSuccess={(type, oldData, newData) => this.onEditSuccess(type, oldData, newData)}
           />
         </Dialog>
 
