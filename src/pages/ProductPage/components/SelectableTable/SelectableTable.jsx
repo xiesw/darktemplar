@@ -139,41 +139,33 @@ export default class SelectableTable extends Component {
     });
   }
 
-  onChange() {
-
+  onChange(file) {
+    console.log("onChange callback : ", file);
   }
 
   imageRender = function (imagepath, index, record) {
     // todo
-      if(imagepath) {
-        return (<img
-          style={styles.image}
-          src={Http.getImagePath(imagepath)}
-          onClick={() => {console.log('pain.xie', index)}}
-        />)
+      //if(imagepath) {
+      if(false) {
+        return (
+          <img
+            style={styles.image}
+            src={Http.getImagePath(imagepath)}
+            onClick={() => {
+              console.log('pain.xie', index)
+            }}
+          />)
       } else {
         return(<Upload
           listType="text"
-          action="//next-upload.shuttle.alibaba.net/upload" // 该接口仅作测试使用，业务请勿使用
+          action="http://39.107.125.244:8080/loan/api/channel/img"
           accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
           data={{ token: "abcd" }}
-          onChange={() => this.onChange()}
-          defaultFileList={[
-            {
-              name: "IMG.png",
-              status: "done",
-              size: 1024,
-              downloadURL:
-                "https://img.alicdn.com/tps/TB19O79MVXXXXcZXVXXXXXXXXXX-1024-1024.jpg",
-              fileURL:
-                "https://img.alicdn.com/tps/TB19O79MVXXXXcZXVXXXXXXXXXX-1024-1024.jpg",
-              imgURL:
-                "https://img.alicdn.com/tps/TB19O79MVXXXXcZXVXXXXXXXXXX-1024-1024.jpg"
-            }
-          ]}
+          name={"channelImg"}
+          onChange={this.onChange}
         >
           <Button type="primary" style={{ margin: "0 0 10px" }}>
-            上传文件
+            上传图片
           </Button>
         </Upload>)
       }
