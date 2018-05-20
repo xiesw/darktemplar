@@ -2,7 +2,6 @@
  * Created by xieshangwu on 2018/3/11.
  * 简单的工具
  */
-
 export default class Utils {
 
   /**
@@ -36,39 +35,40 @@ export default class Utils {
   // 上移数组
   static upRecord(arr, item) {
     let index = arr.indexOf(item);
-    if(index === -1 || index === 0) {
+    if (index === -1 || index === 0) {
       return;
     }
     this.swapItems(arr, index, index - 1);
   };
 
   // 下移数组
-  static downRecord (arr, item) {
+  static downRecord(arr, item) {
     let index = arr.indexOf(item);
-    if(index === -1 || index === arr.length -1) {
+    if (index === -1 || index === arr.length - 1) {
       return;
     }
     this.swapItems(arr, index, index + 1);
   };
 
-  // 判断两个数组是否一致
-  static compareArray(a1, a2) {
-    if (a1 === a2) return true;
-    if ((!a1 && a2) || (a1 && ! a2)) return false;
-    if (a1.length !== a2.length) return false;
-    for (let i = 0, n = a1.length; i < n; i++) {
-      if (a1[i] !== a2[i]) return false;
-    }
-    return true;
-  }
-
   static exchangeItem(arr, oldItem, newItem) {
     let index = arr.indexOf(oldItem);
-    if(index === -1) {
+    if (index === -1) {
       return false;
     }
     arr.splice(index, 1, newItem);
     return true;
   }
+
+  // 为数组列表添加顺序
+  static addOrder(arr) {
+    if (!arr || arr.length === 0) {
+      return;
+    }
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].channelOrder = i;
+    }
+  }
+
 }
+
 

@@ -3,12 +3,9 @@ import {
   Table,
   Button,
   Icon,
-  Pagination,
   Dialog,
-  Notice,
   Feedback,
-  Form,
-  Upload
+  Switch
 } from '@icedesign/base';
 import IceContainer from '@icedesign/container';
 import Api from "../../../../net/Api";
@@ -16,10 +13,10 @@ import Http from "../../../../net/Http";
 import PageEdit from "../../../PageEdit/PageEdit";
 import SettingsForm from "../../../PageEdit/components/SettingsForm/SettingsForm";
 import Utils from "../../../../util/Utils";
+import Dropzone from 'react-dropzone';
+import request from 'superagent';
 
-// 注意：下载数据的功能，强烈推荐通过接口实现数据输出，并下载
-// 因为这样可以有下载鉴权和日志记录，包括当前能不能下载，以及谁下载了什么
-
+const lodash = require('lodash');
 export default class SelectableTable extends Component {
   static displayName = 'SelectableTable';
 
@@ -27,12 +24,10 @@ export default class SelectableTable extends Component {
     super(props);
 
     this.state = {
-      selectedRowKeys: [],
       dataSource: [],
       dialogVisible: false,
       dialogType: "",
       editData: {},
-      noticeText: '',
       isSaved: true
     };
   }
@@ -40,7 +35,7 @@ export default class SelectableTable extends Component {
   componentDidMount() {
     Api.getLoanList()
       .then(result => {
-        this.serviceData = result.slice();
+        this.serviceData = lodash.cloneDeep(result);
         this.setState({
           dataSource: result
         })
@@ -133,7 +128,7 @@ export default class SelectableTable extends Component {
     Api.uploadLoanList(this.state.dataSource)
       .then(result => {
         Feedback.toast.success("保存成功");
-        this.serviceData = this.state.dataSource.slice();
+        this.serviceData = lodash.cloneDeep(this.state.dataSource);
       })
       .catch(error => {
           console.log('pain.xie', error);
@@ -144,56 +139,68 @@ export default class SelectableTable extends Component {
 
   // 检查是否保存了数据
   checkSave() {
+    // console.log('pain.xie', this.state.dataSource);
+    // console.log('pain.xie', this.serviceData);
     this.setState({
-      isSaved: Utils.compareArray(this.state.dataSource, this.serviceData)
+      isSaved: lodash.isEqual(this.state.dataSource, this.serviceData)
     });
   }
 
-  onChange(file) {
-    console.log("onChange callback : ", file);
+  // 上传图片
+  onImageDrop(file, record) {
+    let hah = record;
+    console.log('pain.xie', file);
+    Api.uploadImg(file[0])
+      .then(result => {
+          console.log('pain.xie', result);
+          hah.imagepath = file[0].name;
+          this.checkSave();
+        }
+      )
+      .catch(error => {
+          console.log('pain.xie', error);
+        }
+      );
   }
 
-  onSuccess(res, dataUrl) {
-    console.log("onSuccess callback : ", res);
-  }
-
-  onError(file, index, record) {
-    console.log("onError callback : ", file);
-    console.log('pain.xie:', index);
-    console.log('pain.xie:', record);
-    record.imagepath = file.name;
-    this.forceUpdate();
+  onStateChange(record) {
+    let isShow = record.state;
+    record.state = +(!isShow);
     this.checkSave();
   }
 
+  // 渲染图片
   imageRender(imagepath, index, record) {
-    // todo
-    console.log('pain.xie:', "123333");
     return (
-      <Upload
-        listType="text"
-        action="http://39.107.125.244:8080/loan/api/channel/img"
+      <Dropzone
+        multiple={false}
+        style={{width: 50, height: 50}}
         accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"
-        data={{token: "abcd"}}
-        name={"channelImg"}
-        limit={1}
-        showUploadList={false}
-        onChange={(file) => this.onChange(file)}
-        onError={(file) => this.onError(file, index, record)}
-      >
-        {
-          imagepath ?
-            <img
-              style={styles.image}
-              src={Http.getImagePath(imagepath)}
-            />
-            : <Button type="primary" style={{margin: "0 0 10px"}}>
-              上传图片
-            </Button>
+        onDrop={(file) => this.onImageDrop(file, record)}>
+        {imagepath ?
+          <img
+            style={styles.image}
+            src={Http.getImagePath(imagepath)}
+          />
+          : <Button
+            size="small"
+            type={'primary'}
+          >
+            上传图片
+          </Button>
         }
-      </Upload>)
+      </Dropzone>
+    )
   };
 
+  // 渲染状态
+  stateRender(state, index, record) {
+    return (
+      <Switch checked={!!state} onChange={() => this.onStateChange(record)} />
+    )
+  }
+
+  // 渲染操作
   renderOperator = (value, index, record) => {
     return (
       <div>
@@ -221,7 +228,6 @@ export default class SelectableTable extends Component {
   };
 
   render() {
-
     return (
       <div className="selectable-table" style={styles.selectableTable}>
         <IceContainer style={styles.IceContainer}>
@@ -235,7 +241,7 @@ export default class SelectableTable extends Component {
               style={styles.batchBtn}
               type={this.state.isSaved ? 'normal' : 'primary'}
             >
-              <Icon type="store"/>保存
+              <Icon type="store"/>发布
             </Button>
           </div>
         </IceContainer>
@@ -253,6 +259,10 @@ export default class SelectableTable extends Component {
             <Table.Column title="链接" dataIndex="applyUrl" width={160}/>
             <Table.Column title="申请人数" dataIndex="joincount" width={80}/>
             <Table.Column title="统计code" dataIndex="code" width={100}/>
+            <Table.Column title="显示"
+                          cell={(state, index, record) => this.stateRender(state, index, record)}
+                          dataIndex="state"
+                          width={60}/>
             <Table.Column
               title="操作"
               cell={this.renderOperator}
