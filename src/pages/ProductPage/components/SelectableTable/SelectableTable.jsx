@@ -125,6 +125,10 @@ export default class SelectableTable extends Component {
 
   // 保存数据到服务器
   save() {
+    let dataSource = this.state.dataSource;
+    Utils.addOrder(dataSource);
+    console.log('pain.xie', dataSource);
+
     Api.uploadLoanList(this.state.dataSource)
       .then(result => {
         Feedback.toast.success("保存成功");
@@ -206,12 +210,12 @@ export default class SelectableTable extends Component {
       <div>
         <div>
           <a onClick={() => this.editItem(record)}>编辑</a>
-          <a
-            style={styles.removeBtn}
-            onClick={this.deleteItem.bind(this, record)}
-          >
-            删除
-          </a>
+          {/*<a*/}
+            {/*style={styles.removeBtn}*/}
+            {/*onClick={this.deleteItem.bind(this, record)}*/}
+          {/*>*/}
+            {/*删除*/}
+          {/*</a>*/}
         </div>
         <div style={{marginTop: 10}}>
           <a onClick={this.up.bind(this, record)}>向上</a>

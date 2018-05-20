@@ -112,32 +112,6 @@ export default class SettingsForm extends Component {
                 </Col>
               </Row>
 
-              {/*<Row style={styles.formItem}>*/}
-              {/*<Col xxs="6" s="5" l="3" style={styles.label}>*/}
-              {/*Logo：*/}
-              {/*</Col>*/}
-              {/*<Col s="12" l="10">*/}
-              {/*<IceFormBinder name="avatar" required message="必填">*/}
-              {/*<ImageUpload*/}
-              {/*listType="picture-card"*/}
-              {/*action=""*/}
-              {/*accept="image/png, image/jpg, image/jpeg, image/gif, image/bmp"*/}
-              {/*locale={{*/}
-              {/*image: {*/}
-              {/*cancel: '取消上传',*/}
-              {/*addPhoto: '上传图片',*/}
-              {/*},*/}
-              {/*}}*/}
-              {/*beforeUpload={beforeUpload}*/}
-              {/*onChange={onChange}*/}
-              {/*onSuccess={onSuccess}*/}
-              {/*onError={onError}*/}
-              {/*/>*/}
-              {/*</IceFormBinder>*/}
-              {/*<IceFormError name="avatar" />*/}
-              {/*</Col>*/}
-              {/*</Row>*/}
-
               <Row style={styles.formItem}>
                 <Col xxs="6" s="5" l="3" style={styles.label}>
                   描述：
